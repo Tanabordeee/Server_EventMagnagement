@@ -1,19 +1,20 @@
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Notification } from "src/notification/entities/notification.entity";
 import { Favorite } from "src/favorite/entities/favorite.entity";
 import { Event } from "src/event/entity/event.entity";
+import * as bcrypt from "bcrypt";
 @Entity("user")
 export class User{
     @PrimaryGeneratedColumn("uuid")
     userId:string;
     
-    @Column()
-    userName:string;
+    @Column({nullable: false})
+    username:string;
     
-    @Column()
+    @Column({nullable: false , unique: true})
     email:string;
     
-    @Column()
+    @Column({nullable: false})
     password:string;
     
     @CreateDateColumn()
@@ -29,4 +30,13 @@ export class User{
     @ManyToMany(type => Event , (events) => events.user)
     @JoinTable()
     events:Event[];
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    async hashpassword(){
+        if(this.password){
+            const salt = await bcrypt.genSalt(10);
+            this.password = await bcrypt.hash(this.password , salt);
+        }
+    }
 }

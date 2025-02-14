@@ -1,6 +1,6 @@
 import {forwardRef , Module } from '@nestjs/common';
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
+import { UsersController } from './UsersController';
+import { UsersService } from './user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { EventModule } from 'src/event/event.module';
@@ -11,8 +11,8 @@ import { NotificationModule } from 'src/notification/notification.module';
   forwardRef(() => NotificationModule),
   forwardRef(() => FavoritesModule),
   forwardRef(() => EventModule),],
-  controllers: [UserController],
-  providers: [UserService],
+  controllers: [UsersController],
+  providers: [UsersService],
   exports:[TypeOrmModule]
 })
 export class UserModule {}
