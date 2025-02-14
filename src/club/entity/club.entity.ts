@@ -5,19 +5,19 @@ export class Club{
     @PrimaryGeneratedColumn("uuid")
     clubID:string;
 
-    @Column()
+    @Column({nullable: false })
     clubName:string;
 
     @Column()
     description:string;
 
-    @Column()
+    @Column({nullable: false , unique: true})
     email:string;
 
-    @Column()
+    @Column({nullable: false })
     username:string;
 
-    @Column()
+    @Column({nullable: false })
     password:string;
 
     @CreateDateColumn()

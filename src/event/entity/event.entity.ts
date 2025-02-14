@@ -10,7 +10,7 @@ export class Event{
     @PrimaryGeneratedColumn("uuid")
     eventID:string;
 
-    @Column()
+    @Column({nullable: false})
     eventName:string;
 
     @Column({type:"timestamp"})

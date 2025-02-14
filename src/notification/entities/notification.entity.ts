@@ -6,7 +6,7 @@ export class Notification{
     @PrimaryGeneratedColumn("uuid")
     notificationID:string;
 
-    @Column()
+    @Column({nullable: false})
     message:string;
 
     @CreateDateColumn()

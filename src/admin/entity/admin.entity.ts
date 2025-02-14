@@ -8,10 +8,10 @@ export class Admin{
     @Column()
     adminName:string;
 
-    @Column()
+    @Column({nullable: false , unique:true})
     email:string;
 
-    @Column()
+    @Column({nullable: false })
     password:string;
 
     @CreateDateColumn()
