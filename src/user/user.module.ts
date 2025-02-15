@@ -13,6 +13,6 @@ import { NotificationModule } from 'src/notification/notification.module';
   forwardRef(() => EventModule),],
   controllers: [UsersController],
   providers: [UsersService],
-  exports:[TypeOrmModule]
+  exports:[TypeOrmModule , UsersService]
 })
 export class UserModule {}

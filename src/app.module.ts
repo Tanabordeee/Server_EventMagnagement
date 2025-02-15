@@ -15,10 +15,12 @@ import { Club } from './club/entity/club.entity';
 import { Admin } from './admin/entity/admin.entity';
 import { Event } from './event/entity/event.entity';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
+      isGlobal: true,
       envFilePath: '.env', 
     }),
     TypeOrmModule.forRoot({
@@ -38,6 +40,7 @@ import { ConfigModule } from '@nestjs/config';
     ClubModule,
     EventModule,
     AdminModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
