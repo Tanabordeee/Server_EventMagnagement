@@ -9,11 +9,14 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AdminStrategy } from './strategies/admin.startegy';
 import { AdminModule } from 'src/admin/admin.module';
+import { ClubStrategy } from './strategies/club.startegy';
+import { ClubModule } from 'src/club/club.module';
 
 @Module({
   imports: [
     UserModule,
     AdminModule,
+    ClubModule,
     PassportModule,
     ConfigModule,
     JwtModule.registerAsync({
@@ -26,6 +29,6 @@ import { AdminModule } from 'src/admin/admin.module';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy , AdminStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy , AdminStrategy , ClubStrategy],
 })
 export class AuthModule {}

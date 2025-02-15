@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete ,Request, UseGuards ,
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
 import { AdminAuthGuard } from './admin-auth.guard';
+import { ClubAuthGuard } from './club-auth.guard';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -20,6 +21,17 @@ export class AuthController {
   @Post("/adminlogin")
   async adminlogin(@Request() req , @Res({passthrough:true}) res){
     const accessToken = await this.authService.Adminlogin(req.user);
+    // save to cookie
+    res.cookie("accessToken", accessToken , {
+      httpOnly:true,
+    });
+    return {message : "Login Successfully"};
+  }
+
+  @UseGuards(ClubAuthGuard)
+  @Post("/clublogin")
+  async clublogin(@Request() req , @Res({passthrough:true}) res){
+    const accessToken = await this.authService.Clublogin(req.user);
     // save to cookie
     res.cookie("accessToken", accessToken , {
       httpOnly:true,

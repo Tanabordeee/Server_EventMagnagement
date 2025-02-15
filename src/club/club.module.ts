@@ -10,6 +10,8 @@ import { EventModule } from 'src/event/event.module';
     forwardRef(() => EventModule)],
   controllers: [ClubController],
   providers: [ClubService],
-  exports:[TypeOrmModule]
+  exports:[TypeOrmModule , ClubService]
 })
-export class ClubModule {}
+export class ClubModule {
+
+}

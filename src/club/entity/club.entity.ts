@@ -1,5 +1,6 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn  , CreateDateColumn} from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn  , CreateDateColumn , BeforeInsert , BeforeUpdate} from "typeorm";
 import { Event } from "src/event/entity/event.entity";
+import * as bcrypt from "bcrypt";
 @Entity("Club")
 export class Club{
     @PrimaryGeneratedColumn("uuid")
@@ -15,9 +16,6 @@ export class Club{
     email:string;
 
     @Column({nullable: false })
-    username:string;
-
-    @Column({nullable: false })
     password:string;
 
     @CreateDateColumn()
@@ -25,4 +23,13 @@ export class Club{
 
     @OneToMany(type => Event , (events) => events.club)
     events:Event[];
+
+        @BeforeInsert()
+        @BeforeUpdate()
+        async hashpassword(){
+            if(this.password){
+                const salt = await bcrypt.genSalt(10);
+                this.password = await bcrypt.hash(this.password , salt);
+            }
+        }
 }
