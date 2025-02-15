@@ -22,24 +22,21 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
-
-  @UseGuards(JwtAuthGuard)
   @Get('/profile')
+  @UseGuards(JwtAuthGuard)
   findOne(@Request() req) {
     const user = this.usersService.findByEmail(req.user.email);
     return user;
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
-  }
+  @Patch("/update")
   @UseGuards(JwtAuthGuard)
+  update(@Request() req, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(req.user.email, updateUserDto);
+  }
+
   @Delete('/delete')
+  @UseGuards(JwtAuthGuard)
   remove(@Request() req) {
     return this.usersService.remove(req.user.email);
   }

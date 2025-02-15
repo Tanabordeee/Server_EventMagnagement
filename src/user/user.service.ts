@@ -35,8 +35,8 @@ export class UsersService {
     });
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User | null> {
-    const user = await this.userRepository.findOne({ where: { userId: id } });
+  async update(email : string, updateUserDto: UpdateUserDto): Promise<User | null> {
+    const user = await this.userRepository.findOne({ where: { email } });
     if (!user) return null;
 
     Object.assign(user, updateUserDto);
