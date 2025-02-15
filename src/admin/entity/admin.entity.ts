@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn , CreateDateColumn, ManyToMany, JoinTable} from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn , CreateDateColumn, ManyToMany, JoinTable , BeforeInsert , BeforeUpdate} from "typeorm";
 import { Event } from "src/event/entity/event.entity";
+import * as bcrypt from "bcrypt";
 @Entity("admin")
 export class Admin{
     @PrimaryGeneratedColumn("uuid")
@@ -20,4 +21,12 @@ export class Admin{
     @ManyToMany(type => Event , (events) => events.admin)
     @JoinTable()
     events:Event[];
+        @BeforeInsert()
+        @BeforeUpdate()
+        async hashpassword(){
+            if(this.password){
+                const salt = await bcrypt.genSalt(10);
+                this.password = await bcrypt.hash(this.password , salt);
+            }
+        }
 }

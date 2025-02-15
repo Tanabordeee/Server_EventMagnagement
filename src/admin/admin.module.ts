@@ -10,6 +10,6 @@ import { EventModule } from 'src/event/event.module';
   forwardRef(() => EventModule)],
   controllers: [AdminController],
   providers: [AdminService],
-  exports:[TypeOrmModule]
+  exports:[TypeOrmModule , AdminService]
 })
 export class AdminModule {}

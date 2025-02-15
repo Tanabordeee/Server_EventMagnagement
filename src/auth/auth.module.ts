@@ -7,10 +7,13 @@ import { LocalStrategy } from './strategies/local.startegy';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AdminStrategy } from './strategies/admin.startegy';
+import { AdminModule } from 'src/admin/admin.module';
 
 @Module({
   imports: [
     UserModule,
+    AdminModule,
     PassportModule,
     ConfigModule,
     JwtModule.registerAsync({
@@ -23,6 +26,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy , AdminStrategy],
 })
 export class AuthModule {}
