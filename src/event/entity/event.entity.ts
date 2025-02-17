@@ -14,19 +14,19 @@ export class Event{
     eventName:string;
 
     @Column({type:"timestamp"})
-    eventData:Date
+    eventDate:Date
 
     @Column({type:"time"})
     time:string;
 
-    @Column()
+    @Column({type : "text"})
+    image:string;
+
+    @Column({ default: 'not approve' })
     status:string;
 
     @CreateDateColumn()
     created:Date;
-
-    @ManyToMany(type => User , (user) => user.events)
-    user:User;
 
     @OneToMany(type => Favorite , (favorite) => favorite.events)
     favorite:Favorite[];
