@@ -32,17 +32,17 @@ export class ClubService {
   }
 
   async update(email : string, UpdateClubDto: UpdateClubDto): Promise<Club | null> {
-    const user = await this.ClubRepository.findOne({ where: { email } });
-    if (!user) return null;
+    const club = await this.ClubRepository.findOne({ where: { email } });
+    if (! club) return null;
 
-    Object.assign(user, UpdateClubDto);
-    return await this.ClubRepository.save(user);
+    Object.assign( club, UpdateClubDto);
+    return await this.ClubRepository.save( club);
   }
 
   async remove(email: string): Promise<Club | null> {
-    const user = await this.ClubRepository.findOne({ where: { email } });
-    if (!user) return null;
-    await this.ClubRepository.remove(user);
-    return user;
+    const  club = await this.ClubRepository.findOne({ where: { email } });
+    if (! club) return null;
+    await this.ClubRepository.remove( club);
+    return  club;
   }
 }
