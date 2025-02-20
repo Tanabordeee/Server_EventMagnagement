@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post , Request , Param , Patch, UseGuards , Put} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post , Request , Param , Patch, UseGuards , Put , Query} from '@nestjs/common';
 import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
@@ -14,7 +14,7 @@ export class EventController {
 
     @Get("/namebyuser")
     @UseGuards(JwtAuthGuard)
-    getEventName(@Body("eventName") eventName:string){
+    getEventName(@Query("eventName") eventName: string){
         return this.eventService.FindEventNameByUser(eventName);
     }
 
