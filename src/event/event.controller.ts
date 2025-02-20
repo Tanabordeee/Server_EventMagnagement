@@ -24,13 +24,13 @@ export class EventController {
         return this.eventService.CreateEventByClub(req.user.email , CreateEventDto);
     }
 
-    @Delete("/deletebyclub:eventID")
+    @Delete("/deletebyclub/:eventID")
     @UseGuards(JwtAuthGuard)
     DeleteEventByClub(@Request() req , @Param("eventID") eventID:string){
         return this.eventService.DeleteEventByClub(req.user.email , eventID);
     }
 
-    @Patch("/updatebyclub:eventID")
+    @Patch("/updatebyclub/:eventID")
     @UseGuards(JwtAuthGuard)
     UpdateEventByClub(@Request() req ,  @Param("eventID") eventID:string , UpdateEventDto:UpdateEventDto){
         return this.eventService.UpdateEventByClub(req.user.email , eventID , UpdateEventDto);
@@ -42,7 +42,7 @@ export class EventController {
         return this.eventService.FindAllEventByClub(req.user.email);
     }
 
-    @Get("/getonebyclub:eventID")
+    @Get("/getonebyclub/:eventID")
     @UseGuards(JwtAuthGuard)
     GetOneEventByClub(@Request() req , @Param("eventID") eventID:string){
         return this.eventService.FindOneEventByClub(req.user.email , eventID);
@@ -66,13 +66,13 @@ export class EventController {
         return this.eventService.FindEventNameByAdmin(req.user.email , eventName);
     }
 
-    @Delete("/deleteeventbyadmin:eventID")
+    @Delete("/deleteeventbyadmin/:eventID")
     @UseGuards(JwtAuthGuard)
     DeleteeventByAdmin(@Request() req , @Param("eventID") eventID:string){
         return this.eventService.DeleteEventByAdmin(req.user.email , eventID);
     }
 
-    @Patch("/updateeventbyadmin:eventID")
+    @Patch("/updateeventbyadmin/:eventID")
     @UseGuards(JwtAuthGuard)
     UpdateeventByAdmin(@Request() req , @Param("eventID") eventID:string ,  UpdateEventDto : UpdateEventDto){
         return this.eventService.UpdateEventByAdmin(req.user.email ,eventID ,UpdateEventDto);
