@@ -18,8 +18,18 @@ export class User{
     @CreateDateColumn()
     created:Date;
 
-    @ManyToMany(type => Event , (event)=> event.user)
-    @JoinTable()
+    @ManyToMany(() => Event, (event) => event.users) 
+    @JoinTable({
+        name: 'user_events_event',  
+        joinColumn: {
+          name: 'userUserId',        
+          referencedColumnName: 'userId', 
+        },
+        inverseJoinColumn: {
+          name: 'eventEventID',      
+          referencedColumnName: 'eventID', 
+        },
+      })
     events: Event[];
 
 

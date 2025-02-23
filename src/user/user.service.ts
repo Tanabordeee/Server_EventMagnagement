@@ -18,20 +18,20 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    return await this.userRepository.find({ relations: ['notifications', 'favorite'] });
+    return await this.userRepository.find({ relations: ['events'] });
   }
 
   async findOne(id: string): Promise<User | null> {
     return await this.userRepository.findOne({
       where: { userId: id },
-      relations: ['notifications', 'favorite'],
+      relations: ['events'],
     });
   }
 
   async findByEmail(email:string): Promise<User | null>{
     return await this.userRepository.findOne({
       where:{email},
-      relations:['notifications', 'favorite']
+      relations:['events']
     });
   }
 

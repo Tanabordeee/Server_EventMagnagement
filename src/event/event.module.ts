@@ -6,6 +6,9 @@ import { Event } from './entity/event.entity';
 import { AdminModule } from 'src/admin/admin.module';
 import { ClubModule } from 'src/club/club.module';
 import { UserModule } from 'src/user/user.module';
+import { EventUserService } from './EventUser.service';
+import { EventClubService } from './EventClub.service';
+import { EventAdminService } from './EventAdmin.service';
 @Module({
   imports:[TypeOrmModule.forFeature([Event]),
   forwardRef(() => AdminModule),
@@ -13,7 +16,7 @@ import { UserModule } from 'src/user/user.module';
   forwardRef(() => UserModule)
   ],
   controllers: [EventController],
-  providers: [EventService],
+  providers: [EventService , EventUserService , EventClubService , EventAdminService],
   exports:[TypeOrmModule , EventService]
 })
 export class EventModule {}

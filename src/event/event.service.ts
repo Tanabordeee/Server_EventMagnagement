@@ -2,103 +2,109 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Event } from './entity/event.entity';
 import { Repository } from 'typeorm';
-import { Club } from 'src/club/entity/club.entity';
-import { CreateEventDto } from './dto/create-event.dto';
-import { UpdateEventDto } from './dto/update-event.dto';
-import { Admin } from 'src/admin/entity/admin.entity';
+import { User } from 'src/user/entities/user.entity';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { plainToClass } from 'class-transformer';
+const nodemailer = require("nodemailer")
 @Injectable()
 export class EventService {
     constructor(@InjectRepository(Event) private readonly EventRepository: Repository<Event> ,
-     @InjectRepository(Club) private readonly ClubRepository:Repository<Club>,
-     @InjectRepository(Admin) private readonly AdminRepository:Repository<Admin>
+     @InjectRepository(User) private readonly UserRepository : Repository<User>
     ){}
-
-    async FindAllEventByUser(): Promise<Event[]>{
-        return this.EventRepository.find({relations:["club"]});
+    // Register Subject
+    async FavoriteEvent(email: string, eventID: string) {
+      const user = await this.UserRepository.findOne({
+        where: { email },
+        relations: ["events"],
+      });
+      if (!user) return null;
+      const event = await this.EventRepository.findOne({
+        where: { eventID },
+        relations: ["users"],
+      });
+      if (!event) return null;
+      if (!user.events) user.events = [];
+      if (!event.users) event.users = [];
+      // เช็คว่าผู้ใช้ไม่ได้เพิ่มกิจกรรมนี้ไปแล้ว
+      if (!event.users.some((u) => u.email === user.email)) {
+        event.users.push(user);
+      }
+      try {
+        await this.EventRepository.save(event);
+      } catch (error) {
+        console.log(error);
+      }
+      // บันทึกข้อมูลในตารางเชื่อมโยง (user_events_event)
+      if (!user.events.some((e) => e.eventID === event.eventID)) {
+        user.events.push(event);
+        try{
+          await this.UserRepository.save(user); // บันทึกข้อมูลที่เปลี่ยนแปลงใน User
+        }catch(error){
+          console.log(error)
+        }
+      }
+      // ใช้ class-transformer เพื่อแปลงข้อมูลที่ไม่มีวงกลม
+      return plainToClass(Event, event);
     }
 
-    async FindEventNameByUser(eventName : string):Promise<Event[] | null>{
-        const events = await this.EventRepository.find({ where: { eventName } });
-        return events.length > 0 ? events : null;
-    }
-
-    async CreateEventByClub(email : string, CreateEventDto : CreateEventDto): Promise<Event | null>{
-        const club = await this.ClubRepository.findOne({where:{email}})
-        if(!club) return null;
-        const event = this.EventRepository.create({
-            ...CreateEventDto,
-            club
-        });
-        return await this.EventRepository.save(event);
-    }
-
-    async DeleteEventByClub(email : string , eventID : string): Promise<Event | null>{
-        const club = await this.ClubRepository.findOne({where:{email}});
-        if(!club) return null;
-        const event = await this.EventRepository.findOne({where : {eventID , club}});
+    //Unregister Subject
+    async UnFavoriteEvent(email:string , eventID:string){
+        const user = await this.UserRepository.findOne({where:{email}, relations: ["events"] });
+        if(!user) return null;
+        const event = await this.EventRepository.findOne({where : {eventID}, relations: ["users"] });
         if(!event) return null;
-        return await this.EventRepository.remove(event);
+        if(!user.events) user.events = [];
+        if(!event.users) event.users = [];
+        const index = event.users.findIndex(u => u.email === user.email);
+        if(index > -1){
+            event.users.splice(index , 1);
+        }
+        return this.EventRepository.save(event);
+    }
+    @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+    async NotificationEvent(){
+        const today = new Date();
+        const events = await this.EventRepository.find({ relations: ['users'] });
+        if(!events) return null;
+        for(const event of events){
+            const eventDate = new Date(event.eventDate);
+            const diffTime = eventDate.getTime() - today.getTime();
+            const melisecondInOneDay = 1000*3600*24
+            const diffDays = Math.ceil(diffTime/melisecondInOneDay);
+            if(diffDays <= 1 && diffDays >= 0){
+                if(Array.isArray(event.users)){
+                    for(const user of event.users){
+                        this.SendNotification(user.email , `Event ${event.eventName} is happening Tommorrow`)
+                    }
+                }else{
+                    console.error('event.users is not an array');
+                }
+            }
+        }
     }
 
-    async UpdateEventByClub(email: string , eventID:string , UpdateEventDto : UpdateEventDto): Promise<Event | null>{
-        const club = await this.ClubRepository.findOne({ where: { email } });
-        if (!club) return null;
-        const event = await this.EventRepository.findOne({where : {eventID , club}});
-        if(!event) return null;
-        Object.assign(event, UpdateEventDto);
-        return await this.EventRepository.save(event);
-    }
-
-    async FindAllEventByClub(email:string): Promise<Event[] | null>{
-        const club = await this.ClubRepository.findOne({where:{email}});
-        if(!club) return null;
-        const events = await this.EventRepository.find({where : {club}});
-        return events.length > 0 ? events : null;
-    }
-
-    async FindOneEventByClub(email:string , eventID:string): Promise<Event | null>{
-        const club = await this.ClubRepository.findOne({where:{email}});
-        if(!club) return null;
-        return await this.EventRepository.findOne({where : {eventID , club}});
-    }
-
-    async ApproveEventByAdmin(email : string , eventID:string , status:string): Promise<Event | null>{
-        const Admin = await this.AdminRepository.findOne({where:{email}});
-        if(!Admin) return null;
-        const event = await this.EventRepository.findOne({where:{eventID}});
-        if(!event) return null;
-        event.status = status;
-        return await this.EventRepository.save(event);
-    }
-
-    async FindAllEventByAdmin(email:string): Promise<Event[] | null>{
-        const Admin = await this.AdminRepository.findOne({where:{email}});
-        if(!Admin) return null;
-        const events = await this.EventRepository.find({relations:["club" , "favorite" , "notification" , "admin"]});
-        return events.length > 0 ? events : null;
-    }
-
-    async FindEventNameByAdmin(email:string , eventName : string):Promise<Event[] | null>{
-        const Admin = await this.AdminRepository.findOne({where:{email}});
-        if(!Admin) return null;
-        const events = await this.EventRepository.find({ where: { eventName } , relations:["club" , "favorite" , "notification" , "admin"]});
-        return events.length > 0 ? events : null;
-    }
-
-    async DeleteEventByAdmin(email : string , eventID : string): Promise<Event | null>{
-        const Admin = await this.AdminRepository.findOne({where:{email}});
-        if(!Admin) return null;
-        const event = await this.EventRepository.findOne({where : {eventID}});
-        if(!event) return null;
-        return await this.EventRepository.remove(event);
-    }
-
-    async UpdateEventByAdmin(email: string , eventID:string , UpdateEventDto : UpdateEventDto): Promise<Event | null>{
-        const Admin = await this.AdminRepository.findOne({where:{email}});
-        if(!Admin) return null;
-        const event = await this.EventRepository.findOne({where : {eventID}});
-        if(!event) return null;
-        Object.assign(event, UpdateEventDto);
-        return await this.EventRepository.save(event);
+    public SendNotification(email : string , message:string){
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+              user: process.env.EMAIL_USER,
+              pass: process.env.EMAIL_PASS,
+            },
+          });
+          
+          const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "Event IS COMING!!!",
+            text: message,
+          };
+          
+          transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              console.log('Error:', error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
     }
 }
