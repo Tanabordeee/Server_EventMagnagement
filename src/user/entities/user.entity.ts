@@ -1,6 +1,5 @@
 import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Notification } from "src/notification/entities/notification.entity";
-import { Favorite } from "src/favorite/entities/favorite.entity";
+import { Event } from "src/event/entity/event.entity";
 import * as bcrypt from "bcrypt";
 @Entity("user")
 export class User{
@@ -19,12 +18,9 @@ export class User{
     @CreateDateColumn()
     created:Date;
 
-    @OneToMany(type => Notification , (notifications) => notifications.user)
-    notifications: Notification[];
-
-    @ManyToMany(type => Favorite , (favorite)=> favorite.user)
+    @ManyToMany(type => Event , (event)=> event.user)
     @JoinTable()
-    favorite: Favorite[];
+    events: Event[];
 
 
     @BeforeInsert()
