@@ -12,7 +12,8 @@ import { Admin } from './admin/entity/admin.entity';
 import { Event } from './event/entity/event.entity';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
-
+import { ScheduleModule } from '@nestjs/schedule';
+import { EventService } from './event/event.service';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -35,8 +36,9 @@ import { AuthModule } from './auth/auth.module';
     EventModule,
     AdminModule,
     AuthModule,
+    ScheduleModule.forRoot()
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService , EventService],
 })
 export class AppModule {}
