@@ -13,6 +13,8 @@ export class AuthController {
     // save to cookie
     res.cookie("accessToken", accessToken , {
       httpOnly:true,
+      secure: false, // production use true
+      sameSite: 'None',
     });
     return {message : "Login Successfully"};
   }
@@ -24,6 +26,8 @@ export class AuthController {
     // save to cookie
     res.cookie("accessToken", accessToken , {
       httpOnly:true,
+      secure: false, // production use true
+      sameSite: 'None',
     });
     return {message : "Login Successfully"};
   }
@@ -35,6 +39,8 @@ export class AuthController {
     // save to cookie
     res.cookie("accessToken", accessToken , {
       httpOnly:true,
+      secure: false, // production use true
+      sameSite: 'None',
     });
     return {message : "Login Successfully"};
   }
