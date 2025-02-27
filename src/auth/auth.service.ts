@@ -20,7 +20,7 @@ export class AuthService {
     return null;
   }
   async Userlogin(user:any){
-      const payload = {username: user.email , sub:user.userId};
+      const payload = {email: user.email , sub:user.userId};
       return this.jwtService.sign(payload)
   }
 
@@ -33,7 +33,7 @@ export class AuthService {
   }
 
   async Adminlogin(admin:any){
-    const payload = {username: admin.email , sub:admin.adminID};
+    const payload = {email: admin.email , sub:admin.adminID};
     return this.jwtService.sign(payload)
   }
 
@@ -46,7 +46,7 @@ export class AuthService {
   }
 
   async Clublogin(Club:any){
-    const payload = {username: Club.email , sub:Club.adminID};
+    const payload = {email: Club.email , sub:Club.adminID};
     return this.jwtService.sign(payload)
   }
 }
