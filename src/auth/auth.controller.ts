@@ -16,7 +16,7 @@ export class AuthController {
       secure: false, // production use true
       sameSite: 'None',
     });
-    return {message : "Login Successfully"};
+    return {message : "Login Successfully" , user: req.user};
   }
 
   @UseGuards(AdminAuthGuard)
