@@ -7,7 +7,9 @@ import {
   Patch,
   Delete,
   UseGuards,
-  Request
+  Request,
+  HttpException,
+  HttpStatus
 } from '@nestjs/common';
 import { UsersService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -24,20 +26,31 @@ export class UsersController {
 
   @Get('/profile')
   @UseGuards(JwtAuthGuard)
-  findOne(@Request() req) {
-    const user = this.usersService.findByEmail(req.user.email);
+  async findOne(@Request() req) {
+    const user =await this.usersService.findByEmail(req.user.email);
+    if(!user){
+      throw new HttpException("User not found" , HttpStatus.NOT_FOUND);
+    }
     return user;
   }
 
   @Patch("/update")
   @UseGuards(JwtAuthGuard)
-  update(@Request() req, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(req.user.email, updateUserDto);
+  async update(@Request() req, @Body() updateUserDto: UpdateUserDto) {
+    const user = await this.usersService.update(req.user.email, updateUserDto);
+    if(!user){
+      throw new HttpException("User not found" , HttpStatus.NOT_FOUND);
+    }
+    return user;
   }
 
   @Delete('/delete')
   @UseGuards(JwtAuthGuard)
-  remove(@Request() req) {
-    return this.usersService.remove(req.user.email);
+  async remove(@Request() req) {
+    const user = await this.usersService.remove(req.user.email);
+    if(!user){
+      throw new HttpException("User not found" , HttpStatus.NOT_FOUND);
+    }
+    return user;
   }
 }
