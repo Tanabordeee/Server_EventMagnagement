@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post , Request , Param , Patch, UseGuards , Put , Query} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post , Request , Param , Patch, UseGuards , Put , Query, HttpException, HttpStatus} from '@nestjs/common';
 import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
@@ -19,79 +19,131 @@ export class EventController {
 
     @Get("/namebyuser")
     @UseGuards(JwtAuthGuard)
-    getEventName(@Query("eventName") eventName: string){
-        return this.EventUserService.FindEventNameByUser(eventName);
+    async getEventName(@Query("eventName") eventName: string){
+        const result = await this.EventUserService.FindEventNameByUser(eventName);
+        if(!result){
+            throw new HttpException("Event not found", HttpStatus.NOT_FOUND);
+        }
+        return result;
     }
 
     @Post("/create")
     @UseGuards(JwtAuthGuard)
-    CreateEvent(@Request() req , @Body() CreateEventDto:CreateEventDto){
-        return this.EventClubService.CreateEventByClub(req.user.email , CreateEventDto);
+    async CreateEvent(@Request() req , @Body() CreateEventDto:CreateEventDto){
+        const result = await this.EventClubService.CreateEventByClub(req.user.email , CreateEventDto);
+        if(!result){
+            throw new HttpException("Club or Event not found" , HttpStatus.NOT_FOUND);
+        }
+        return result;
     }
 
     @Delete("/deletebyclub/:eventID")
     @UseGuards(JwtAuthGuard)
-    DeleteEventByClub(@Request() req , @Param("eventID") eventID:string){
-        return this.EventClubService.DeleteEventByClub(req.user.email , eventID);
+    async DeleteEventByClub(@Request() req , @Param("eventID") eventID:string){
+        const result = await this.EventClubService.DeleteEventByClub(req.user.email , eventID);
+        if(!result){
+            throw new HttpException("Club or Event not found" , HttpStatus.NOT_FOUND);
+        }
+        return result;
     }
 
     @Patch("/updatebyclub/:eventID")
     @UseGuards(JwtAuthGuard)
-    UpdateEventByClub(@Request() req ,  @Param("eventID") eventID:string , UpdateEventDto:UpdateEventDto){
-        return this.EventClubService.UpdateEventByClub(req.user.email , eventID , UpdateEventDto);
+    async UpdateEventByClub(@Request() req ,  @Param("eventID") eventID:string ,@Body() UpdateEventDto:UpdateEventDto){
+        const result = await this.EventClubService.UpdateEventByClub(req.user.email , eventID , UpdateEventDto);
+        if(!result){
+            throw new HttpException("Club or Event not found" , HttpStatus.NOT_FOUND);
+        }
+        return result;
     }
 
     @Get("/getallbyclub")
     @UseGuards(JwtAuthGuard)
-    GetAllEventByClub(@Request() req){
-        return this.EventClubService.FindAllEventByClub(req.user.email);
+    async GetAllEventByClub(@Request() req){
+        const result = await this.EventClubService.FindAllEventByClub(req.user.email);
+        if(!result){
+            throw new HttpException("Club or Event not found" , HttpStatus.NOT_FOUND);
+        }
+        return result;
     }
 
     @Get("/getonebyclub/:eventID")
     @UseGuards(JwtAuthGuard)
-    GetOneEventByClub(@Request() req , @Param("eventID") eventID:string){
-        return this.EventClubService.FindOneEventByClub(req.user.email , eventID);
+    async GetOneEventByClub(@Request() req , @Param("eventID") eventID:string){
+        const result = await this.EventClubService.FindOneEventByClub(req.user.email , eventID);
+        if(!result){
+            throw new HttpException("Club or Event not found" , HttpStatus.NOT_FOUND);
+        }
+        return result;
     }
 
     @Put("/approvebyadmin/:eventID")
     @UseGuards(JwtAuthGuard)
-    ApproveEventByAdmin(@Request() req , @Param('eventID') eventID: string, @Body("status") status:string){
-        return this.EventAdminService.ApproveEventByAdmin(req.user.email , eventID , status);
+    async ApproveEventByAdmin(@Request() req , @Param('eventID') eventID: string, @Body("status") status:string){
+        const result = await this.EventAdminService.ApproveEventByAdmin(req.user.email , eventID , status);
+        if(!result){
+            throw new HttpException("Admin or Event not found" , HttpStatus.NOT_FOUND);
+        }
+        return result;
     }
 
     @Get("/getallbyadmin")
     @UseGuards(JwtAuthGuard)
-    GetAllEventByAdmin(@Request() req){
-        return this.EventAdminService.FindAllEventByAdmin(req.user.email);
+    async GetAllEventByAdmin(@Request() req){
+        const result = await this.EventAdminService.FindAllEventByAdmin(req.user.email);
+        if(!result){
+            throw new HttpException("Admin or Event not found" , HttpStatus.NOT_FOUND);
+        }
+        return result;
     }
 
     @Get("/getnamebyadmin")
     @UseGuards(JwtAuthGuard)
-    GetNameEventByAdmin(@Request() req , @Body("eventName") eventName : string){
-        return this.EventAdminService.FindEventNameByAdmin(req.user.email , eventName);
+    async GetNameEventByAdmin(@Request() req , @Body("eventName") eventName : string){
+        const result = await this.EventAdminService.FindEventNameByAdmin(req.user.email , eventName);
+        if(!result){
+            throw new HttpException("Admin or Event not found" , HttpStatus.NOT_FOUND);
+        }
+        return result;
     }
 
     @Delete("/deleteeventbyadmin/:eventID")
     @UseGuards(JwtAuthGuard)
-    DeleteeventByAdmin(@Request() req , @Param("eventID") eventID:string){
-        return this.EventAdminService.DeleteEventByAdmin(req.user.email , eventID);
+    async DeleteeventByAdmin(@Request() req , @Param("eventID") eventID:string){
+        const result = await this.EventAdminService.DeleteEventByAdmin(req.user.email , eventID);
+        if(!result){
+            throw new HttpException("Admin or Event not found" , HttpStatus.NOT_FOUND);
+        }
+        return result;
     }
 
     @Patch("/updateeventbyadmin/:eventID")
     @UseGuards(JwtAuthGuard)
-    UpdateeventByAdmin(@Request() req , @Param("eventID") eventID:string ,  UpdateEventDto : UpdateEventDto){
-        return this.EventAdminService.UpdateEventByAdmin(req.user.email ,eventID ,UpdateEventDto);
+    async UpdateeventByAdmin(@Request() req , @Param("eventID") eventID:string ,@Body()  UpdateEventDto : UpdateEventDto){
+        const result = await this.EventAdminService.UpdateEventByAdmin(req.user.email ,eventID ,UpdateEventDto);
+        if(!result){
+            throw new HttpException("Admin or Event not found" , HttpStatus.NOT_FOUND);
+        }
+        return result;
     }
 
     @Patch("/favorites/:eventID")
     @UseGuards(JwtAuthGuard)
-    Favorites(@Request() req , @Param("eventID") eventID:string){
-        return this.eventService.FavoriteEvent(req.user.email , eventID);
+    async Favorites(@Request() req , @Param("eventID") eventID:string){
+        const result = await this.eventService.FavoriteEvent(req.user.email , eventID);
+        if(result == null){
+            throw new HttpException("User or Event or UUID not found" , HttpStatus.NOT_FOUND);
+        }
+        return result;
     }
 
     @Patch("/unfavorite/:eventID")
     @UseGuards(JwtAuthGuard)
-    Unfavorites(@Request() req , @Param("eventID") eventID:string){
-        return this.eventService.UnFavoriteEvent(req.user.email , eventID);
+    async Unfavorites(@Request() req , @Param("eventID") eventID:string){
+        const result = await this.eventService.UnFavoriteEvent(req.user.email , eventID);
+        if(result == null){
+            throw new HttpException("User or Event not found" , HttpStatus.NOT_FOUND);
+        }
+        return result;
     }
 }
