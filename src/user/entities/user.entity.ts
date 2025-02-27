@@ -1,6 +1,7 @@
 import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Event } from "src/event/entity/event.entity";
 import * as bcrypt from "bcrypt";
+import { Exclude } from "class-transformer";
 @Entity("user")
 export class User{
     @PrimaryGeneratedColumn("uuid")
@@ -19,17 +20,7 @@ export class User{
     created:Date;
 
     @ManyToMany(() => Event, (event) => event.users) 
-    @JoinTable({
-        name: 'user_events_event',  
-        joinColumn: {
-          name: 'userUserId',        
-          referencedColumnName: 'userId', 
-        },
-        inverseJoinColumn: {
-          name: 'eventEventID',      
-          referencedColumnName: 'eventID', 
-        },
-      })
+    @Exclude()
     events: Event[];
 
 
