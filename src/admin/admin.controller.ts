@@ -7,7 +7,7 @@ import { UpdateAdminDto } from './dto/update-admin.dto';
 export class AdminController {
     constructor(private readonly AdminService : AdminService){}
     @UseGuards(JwtAuthGuard)
-    @Get()
+    @Get("/")
     findAll(){
         return this.AdminService.findAll();
     }
@@ -19,7 +19,7 @@ export class AdminController {
 
     @UseGuards(JwtAuthGuard)
     @Patch("/update")
-    update(@Request() req , UpdateAdminDto : UpdateAdminDto){
+    update(@Request() req ,@Body() UpdateAdminDto : UpdateAdminDto){
         console.log(req);
         return this.AdminService.Update(req.user.email , UpdateAdminDto)
     }
