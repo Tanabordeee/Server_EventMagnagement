@@ -32,7 +32,8 @@ export class EventClubService {
     const club = await this.ClubRepository.findOne({ where: { email } });
     if (!club) return null;
     const event = await this.EventRepository.findOne({
-      where: { eventID, club },
+      where: { eventID, club: { clubID: club.clubID } },
+      relations: ["club"], 
     });
     if (!event) return null;
     return await this.EventRepository.remove(event);
@@ -46,7 +47,7 @@ export class EventClubService {
     const club = await this.ClubRepository.findOne({ where: { email } });
     if (!club) return null;
     const event = await this.EventRepository.findOne({
-      where: { eventID, club },
+      where: { eventID, club: { clubID: club.clubID } },
     });
     if (!event) return null;
     Object.assign(event, UpdateEventDto);
@@ -56,7 +57,10 @@ export class EventClubService {
   async FindAllEventByClub(email: string): Promise<Event[] | null> {
     const club = await this.ClubRepository.findOne({ where: { email } });
     if (!club) return null;
-    const events = await this.EventRepository.find({ where: { club } });
+    const events = await this.EventRepository.find({
+      where: { club: { clubID: club.clubID } },
+      relations: ["club" , "users"],
+    });
     return events.length > 0 ? events : null;
   }
 
@@ -66,6 +70,6 @@ export class EventClubService {
   ): Promise<Event | null> {
     const club = await this.ClubRepository.findOne({ where: { email } });
     if (!club) return null;
-    return await this.EventRepository.findOne({ where: { eventID, club } });
+    return await this.EventRepository.findOne({ where: { eventID, club: { clubID: club.clubID } } });
   }
 }
