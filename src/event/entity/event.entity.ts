@@ -2,6 +2,7 @@ import { User } from "src/user/entities/user.entity";
 import { Column, Entity, ManyToMany, ManyToOne , PrimaryGeneratedColumn , CreateDateColumn , JoinTable} from "typeorm";
 import { Club } from "src/club/entity/club.entity";
 import { Admin } from "src/admin/entity/admin.entity";
+import { Exclude } from "class-transformer";
 @Entity("event")
 export class Event{
 
@@ -38,6 +39,7 @@ export class Event{
           referencedColumnName: "userId",
         }
       })
+    @Exclude()
     users: User[];
 
     @ManyToOne(type => Club , (club) => club.events)
