@@ -21,6 +21,9 @@ export class Event{
     @Column({type : "text"})
     image:string;
 
+    @Column({type : "text"})
+    detail:string;
+
     @Column({ default: 'not approve' })
     status:string;
 

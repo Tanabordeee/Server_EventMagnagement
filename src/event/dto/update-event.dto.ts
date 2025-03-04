@@ -3,4 +3,5 @@ export class UpdateEventDto{
     readonly eventDate?:Date;
     readonly time?:string;
     readonly image?:string;
+    readonly detail?:string;
 }
