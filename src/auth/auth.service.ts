@@ -46,7 +46,7 @@ export class AuthService {
   }
 
   async Clublogin(Club:any){
-    const payload = {email: Club.email , sub:Club.adminID};
+    const payload = {email: Club.email , sub:Club.clubID};
     return this.jwtService.sign(payload)
   }
 
