@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/user/user.service';
 import * as bcrypt from "bcrypt";
 import { User } from 'src/user/entities/user.entity';
@@ -48,5 +48,14 @@ export class AuthService {
   async Clublogin(Club:any){
     const payload = {email: Club.email , sub:Club.adminID};
     return this.jwtService.sign(payload)
+  }
+
+  async verifyToken(token: string) {
+    try {
+      const payload = this.jwtService.verify(token);
+      return payload;
+    } catch (e) {
+      throw new UnauthorizedException('Invalid token');
+    }
   }
 }

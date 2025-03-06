@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete ,Request, UseGuards , Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete ,Request, UseGuards , Res, UnauthorizedException, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
 import { AdminAuthGuard } from './admin-auth.guard';
@@ -18,6 +18,16 @@ export class AuthController {
     });
     return {message : "Login Successfully" , user: req.user};
   }
+
+  @Get('/verify')
+async verifyToken(@Req() req, @Res({ passthrough: true }) res) {
+
+  const token = req.cookies['accessToken'];
+  if (!token) throw new UnauthorizedException();
+
+  const user = await this.authService.verifyToken(token); 
+  return { user };
+}
 
   @UseGuards(AdminAuthGuard)
   @Post("/adminlogin")
