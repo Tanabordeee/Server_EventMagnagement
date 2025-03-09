@@ -7,6 +7,7 @@ import { AdminService } from 'src/admin/admin.service';
 import { Admin } from 'src/admin/entity/admin.entity';
 import { Club } from 'src/club/entity/club.entity';
 import { ClubService } from 'src/club/club.service';
+import { Response } from 'express';
 @Injectable()
 export class AuthService {
   constructor(private usersService: UsersService,
@@ -58,4 +59,14 @@ export class AuthService {
       throw new UnauthorizedException('Invalid token');
     }
   }
+  async logout(res: Response): Promise<object> {
+    res.clearCookie('accessToken', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+    });
+  
+    return { message: 'Logout Successfully' };
+  }
+  
 }
