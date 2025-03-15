@@ -9,7 +9,7 @@ let cachedServer: any;
 async function buildServer() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: 'https://client-event-magnagement.vercel.app',
     credentials: true,
   });
   app.setGlobalPrefix("api");
