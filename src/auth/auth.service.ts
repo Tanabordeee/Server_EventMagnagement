@@ -51,22 +51,13 @@ export class AuthService {
     return this.jwtService.sign(payload, { expiresIn: '7d' })
   }
 
-  async verifyToken(token: string) {
+  async verifyUser(Id: string) {
     try {
-      const payload = this.jwtService.verify(token);
+      const payload = await this.usersService.findOne(Id);
       return payload;
     } catch (e) {
-      throw new UnauthorizedException('Invalid token');
+      throw new UnauthorizedException('Invalid User');
     }
-  }
-  async logout(res: Response): Promise<object> {
-    res.clearCookie('accessToken', {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax',
-    });
-  
-    return { message: 'Logout Successfully' };
   }
   
 }

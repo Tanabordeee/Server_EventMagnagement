@@ -7,6 +7,7 @@ import {
   Res,
   UnauthorizedException,
   Req,
+  Body,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
@@ -29,18 +30,14 @@ export class AuthController {
     return { message: 'Login Successfully', user: req.user };
   }
 
-  @Get('/verify')
-  async verifyToken(@Req() req, @Res({ passthrough: true }) res) {
-    const token = req.cookies['accessToken'];
-    if (!token) throw new UnauthorizedException();
-
-    const user = await this.authService.verifyToken(token);
-    return { user };
-  }
-
-  @Post('/logout')
-  async logout(@Res({ passthrough: true }) res) {
-    return this.authService.logout(res);
+  @Post('/verify')
+  async verifyuser(@Body() body: { userId: string }) {
+    const user = await this.authService.verifyUser(body.userId);
+    if (user) {
+      return { isValid: true };
+    } else {
+      return { isValid: false };
+    }
   }
   
 
