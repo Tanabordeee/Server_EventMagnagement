@@ -9,7 +9,7 @@ import { Controller ,    Body,
 import { ClubService } from './club.service';
 import { CreateClubDto } from './dto/create-club.dto';
 import { UpdateClubDto } from './dto/update-club.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 @Controller('club')
 export class ClubController {
       constructor(private readonly ClubService: ClubService) {}

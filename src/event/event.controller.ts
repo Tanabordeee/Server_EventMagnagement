@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Post , Request , Param , Patch, UseGuard
 import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import {EventUserService } from './EventUser.service';
 import { EventClubService } from './EventClub.service';
 import { EventAdminService } from './EventAdmin.service';
