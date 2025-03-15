@@ -22,7 +22,7 @@ export class AuthService {
   }
   async Userlogin(user:any){
       const payload = {email: user.email , sub:user.userId};
-      return this.jwtService.sign(payload)
+      return this.jwtService.sign(payload, { expiresIn: '7d' })
   }
 
   async validateAdmin(email:string , password:string):Promise<Admin | null>{
@@ -35,7 +35,7 @@ export class AuthService {
 
   async Adminlogin(admin:any){
     const payload = {email: admin.email , sub:admin.adminID};
-    return this.jwtService.sign(payload)
+    return this.jwtService.sign(payload, { expiresIn: '7d' })
   }
 
   async validateClub(email:string , password:string):Promise<Club | null>{
@@ -48,7 +48,7 @@ export class AuthService {
 
   async Clublogin(Club:any){
     const payload = {email: Club.email , sub:Club.clubID};
-    return this.jwtService.sign(payload)
+    return this.jwtService.sign(payload, { expiresIn: '7d' })
   }
 
   async verifyToken(token: string) {

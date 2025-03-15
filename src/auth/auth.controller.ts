@@ -2,10 +2,6 @@ import {
   Controller,
   Get,
   Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
   Request,
   UseGuards,
   Res,
@@ -28,6 +24,7 @@ export class AuthController {
       httpOnly: true,
       secure: true, // production use true
       sameSite: 'None',
+      maxAge: 7 * 24 * 60 * 60 * 1000
     });
     return { message: 'Login Successfully', user: req.user };
   }
@@ -43,7 +40,6 @@ export class AuthController {
 
   @Post('/logout')
   async logout(@Res({ passthrough: true }) res) {
-    console.log(res);
     return this.authService.logout(res);
   }
   
@@ -57,6 +53,7 @@ export class AuthController {
       httpOnly: true,
       secure: true, // production use true
       sameSite: 'None',
+      maxAge: 7 * 24 * 60 * 60 * 1000
     });
     return { message: 'Login Successfully' };
   }
@@ -70,6 +67,7 @@ export class AuthController {
       httpOnly: true,
       secure: true, // production use true
       sameSite: 'None',
+      maxAge: 7 * 24 * 60 * 60 * 1000
     });
     return { message: 'Login Successfully' };
   }
