@@ -30,6 +30,9 @@ import { EventService } from './event/event.service';
       entities: [User, Club, Event, Admin],
       synchronize: true,
       logging: true,
+      ssl:{
+        rejectUnauthorized: false,
+      }
     }),
     UserModule,
     ClubModule,
