@@ -27,6 +27,7 @@ export class UsersController {
   @Get('/profile')
   @UseGuards(JwtAuthGuard)
   async findOne(@Request() req) {
+    console.log(req.user);
     const user =await this.usersService.findByEmail(req.user.email);
     if(!user){
       throw new HttpException("User not found" , HttpStatus.NOT_FOUND);

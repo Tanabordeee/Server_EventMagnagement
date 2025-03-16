@@ -60,4 +60,21 @@ export class AuthService {
     }
   }
   
+  async verifyClub(Id: string) {
+    try {
+      console.log(Id);
+      const payload = await this.ClubService.findOne(Id);
+      return payload;
+    } catch (e) {
+      throw new UnauthorizedException('Invalid Club');
+    }
+  }
+  async verifyAdmin(Id: string) {
+    try {
+      const payload = await this.AdminService.findOne(Id);
+      return payload;
+    } catch (e) {
+      throw new UnauthorizedException('Invalid Admin');
+    }
+  }
 }

@@ -30,7 +30,7 @@ export class AuthController {
     return { message: 'Login Successfully', user: req.user };
   }
 
-  @Post('/verify')
+  @Post('/verifyuser')
   async verifyuser(@Body() body: { userId: string }) {
     const user = await this.authService.verifyUser(body.userId);
     if (user) {
@@ -39,7 +39,26 @@ export class AuthController {
       return { isValid: false };
     }
   }
-  
+  @Post('/verifyclub')
+  async verifyclub(@Body() body: { clubId: string }) {
+    const user = await this.authService.verifyClub(body.clubId);
+    if (user) {
+      return { isValid: true };
+    } else {
+      return { isValid: false };
+    }
+  }
+
+  @Post('/verifyadmin')
+  async verifyadmin(@Body() body: { adminId: string }) {
+    const user = await this.authService.verifyAdmin(body.adminId);
+    if (user) {
+      return { isValid: true };
+    } else {
+      return { isValid: false };
+    }
+  }
+
 
   @UseGuards(AdminAuthGuard)
   @Post('/adminlogin')
@@ -52,7 +71,7 @@ export class AuthController {
       sameSite: 'None',
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
-    return { message: 'Login Successfully' };
+    return { message: 'Login Successfully' , user: req.user };
   }
 
   @UseGuards(ClubAuthGuard)
@@ -66,6 +85,6 @@ export class AuthController {
       sameSite: 'None',
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
-    return { message: 'Login Successfully' };
+    return { message: 'Login Successfully' , user: req.user};
   }
 }

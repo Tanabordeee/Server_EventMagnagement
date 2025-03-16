@@ -18,9 +18,10 @@ export class ClubService {
     }
 
   async findOne(id: string): Promise<Club | null> {
+    console.log(id);
     return await this.ClubRepository.findOne({
       where: { clubID: id },
-      relations: ['notifications', 'favorite', 'events'],
+      relations: ['events'],
     });
   }
 
