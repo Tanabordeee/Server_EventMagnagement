@@ -14,6 +14,14 @@ export class AdminService {
     async findAll(): Promise<Admin[]>{
         return await this.AdminRepository.find({relations:["events"]});
     }
+
+  async findOne(id: string): Promise<Admin | null> {
+    return await this.AdminRepository.findOne({
+      where: {  adminID: id },
+      relations: ['events'],
+    });
+  }
+
     async Update(email : string , UpdateAdminDto : UpdateAdminDto): Promise<Admin | null>{
         const Admin = await this.AdminRepository.findOne({where:{email}});
         if (!Admin) return null;
