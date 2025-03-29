@@ -99,7 +99,7 @@ export class EventController {
 
     @Get("/getnamebyadmin")
     @UseGuards(JwtAuthGuard)
-    async GetNameEventByAdmin(@Request() req , @Body("eventName") eventName : string){
+    async GetNameEventByAdmin(@Request() req , @Query("eventName") eventName: string){
         const result = await this.EventAdminService.FindEventNameByAdmin(req.user.email , eventName);
         if(!result){
             throw new HttpException("Admin or Event not found" , HttpStatus.NOT_FOUND);
